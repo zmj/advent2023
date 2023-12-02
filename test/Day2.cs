@@ -43,4 +43,21 @@ public class Day2
         var bag = new RGB(Red: 12, Green: 13, Blue: 14);
         Assert.False(game.IsPossible(bag));
     }
+
+    [Fact]
+    public void Minimum()
+    {
+        var line = "Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red";
+        var game = new CubeGame(line);
+        var min = game.Minimum();
+        Assert.Equal(new(Red: 14, Green: 3, Blue: 15), min);
+    }
+
+    [Fact]
+    public void Power()
+    {
+        var rgb = new RGB(Red: 14, Green: 3, Blue: 15);
+        var power = rgb.Power();
+        Assert.Equal(630, power);
+    }
 }

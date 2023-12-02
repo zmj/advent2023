@@ -32,6 +32,20 @@ public record CubeGame(int Id, RGB[] Reveals)
 
         return true;
     }
+
+    public RGB Minimum()
+    {
+        var (red, green, blue) = (0, 0, 0);
+        static int Max(int i, ref int acc) => acc = Math.Max(i, acc);
+        foreach (var revealed in Reveals)
+        {
+            Max(revealed.Red, ref red);
+            Max(revealed.Green, ref green);
+            Max(revealed.Blue, ref blue);
+        }
+
+        return new(red, green, blue);
+    }
 }
 
 public readonly record struct RGB(int Red, int Green, int Blue) : ISpanParsable<RGB>
@@ -56,6 +70,8 @@ public readonly record struct RGB(int Red, int Green, int Blue) : ISpanParsable<
         result = new(red, green, blue);
         return true;
     }
+
+    public long Power() => (long)Red * Green * Blue;
     
     public static RGB Parse(ReadOnlySpan<char> s, IFormatProvider? provider) => TryParse(s, provider, out var value) ? value : throw new FormatException(s.ToString());
     public static RGB Parse(string s, IFormatProvider? provider) => Parse(s.AsSpan(), provider);
