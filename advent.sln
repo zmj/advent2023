@@ -5,7 +5,12 @@ VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "advent2023", "src\advent2023.csproj", "{DE11FCF8-E940-4560-9106-B91613339934}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tests", "test\tests.csproj", "{B7FE660D-F2DB-4302-B45D-92E9D7A458B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "tests", "test\tests.csproj", "{B7FE660D-F2DB-4302-B45D-92E9D7A458B9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CFF2A75F-FE7F-46FD-B64B-EDE479BE2FF3}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
