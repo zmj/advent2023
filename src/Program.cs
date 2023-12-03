@@ -1,12 +1,16 @@
 ﻿using advent2023;
 
-using var reader = new StringReader(Inputs.Day2);
-var sum = 0L;
+using var reader = new StringReader(Inputs.Day3);
+var grid = new CharGrid();
 while (reader.ReadLine() is { } s)
 {
-    var game = new CubeGame(s);
-    var min = game.Minimum();
-    sum += min.Power();
+    grid.Add(s);
+}
+
+var sum = 0L;
+foreach (var pn in grid.PartNumbers()) 
+{ 
+    sum += pn;
 }
 
 Console.WriteLine(sum);
