@@ -1,16 +1,10 @@
 ﻿using advent2023;
 
-using var reader = new StringReader(Inputs.Day3);
-var grid = new CharGrid();
-while (reader.ReadLine() is { } s)
-{
-    grid.Add(s);
-}
-
+var es = new EngineSchematic(Inputs.Day3);
 var sum = 0L;
-foreach (var pn in grid.PartNumbers()) 
+foreach (var gr in es.GearRatios()) 
 { 
-    sum += pn;
+    sum += gr;
 }
 
 Console.WriteLine(sum);

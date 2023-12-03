@@ -3,7 +3,7 @@
 public class CharGrid
 {
     public readonly record struct Number(int Row, int ColStart, int ColEnd);
-    public readonly record struct Symbol(int Row, int Col);
+    public readonly record struct Symbol(int Row, int Col, char Value);
 
     private readonly List<string> _lines = [];
     public List<Number> Numbers { get; } = [];
@@ -28,7 +28,7 @@ public class CharGrid
                     break;
                 case CharType.symbol:
                     EndNumber(i);
-                    Symbols.Add(new(row, i));
+                    Symbols.Add(new(row, i, c));
                     break;
             }
         }
@@ -60,16 +60,5 @@ public class CharGrid
     {
         return (s.Row >= n.Row - 1 && s.Row <= n.Row + 1)
             && (s.Col >= n.ColStart - 1 && s.Col <= n.ColEnd);
-    }
-
-    public IEnumerable<int> PartNumbers()
-    {
-        foreach (var n in Numbers)
-        {
-            if (Symbols.Any(s => Adjacent(n, s)))
-            {
-                yield return Value(n);
-            }
-        }
     }
 }
