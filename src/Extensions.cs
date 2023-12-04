@@ -14,7 +14,7 @@ public static class Extensions
         where T : ISpanParsable<T>
     {
         Span<Range> slices = stackalloc Range[destination.Length];
-        var count = s.Split(slices, separator);
+        var count = s.Split(slices, separator, StringSplitOptions.RemoveEmptyEntries);
         if (count == slices.Length && s[slices[^1]].Contains(separator)) throw new Exception("destination too small");
 
         for (int i = 0; i < count; i++)

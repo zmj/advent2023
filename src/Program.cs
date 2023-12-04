@@ -1,10 +1,11 @@
 ﻿using advent2023;
 
-var es = new EngineSchematic(Inputs.Day3);
+using var reader = new StringReader(Inputs.Day4);
 var sum = 0L;
-foreach (var gr in es.GearRatios()) 
-{ 
-    sum += gr;
+while (reader.ReadLine() is { } s)
+{
+    var card = new Scratchcard(s);
+    sum += card.Score();
 }
 
 Console.WriteLine(sum);
