@@ -52,3 +52,46 @@ public class Scratchcard : Dictionary<int, int>
         };
     }
 }
+
+public class ScratchcardSet
+{
+    private readonly Dictionary<int, int> _copies = [];
+    private int _originalCount;
+
+    public int Total()
+    {
+        var total = 0;
+        foreach (var (cardId, count) in _copies)
+        {
+            if (cardId <= _originalCount)
+            {
+                total += count;
+            }
+        }
+
+        return total + _originalCount;
+    }
+
+    public ScratchcardSet(string input)
+    {
+        using var reader = new StringReader(input);
+        while (reader.ReadLine() is { } s)
+        {
+            var card = new Scratchcard(s);
+            if (card.Id != ++_originalCount) throw new ArgumentException($"unexpected card id: {card.Id}");
+            Add(card);
+        }
+    }
+
+    private void Add(Scratchcard card)
+    {
+        var count = 1 + _copies.GetValueOrDefault(card.Id);
+        var matches = card.WinningNumbers().Count();
+        for (int i = 1; i <= matches; i++)
+        {
+            AddCopies(card.Id + i, count);
+        }
+    }
+
+    private void AddCopies(int cardId, int count) => CollectionsMarshal.GetValueRefOrAddDefault(_copies, cardId, out _) += count;
+}
