@@ -1,5 +1,5 @@
 ﻿using advent2023;
 
-var set = new ScratchcardSet(Inputs.Day4);
+var almanac = new Almanac(Inputs.Day5);
 
-Console.WriteLine(set.Total());
+Console.WriteLine(almanac.LocateMinimum());
