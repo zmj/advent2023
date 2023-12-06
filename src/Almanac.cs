@@ -11,14 +11,28 @@ public class Almanac
     public readonly record struct Humidity(long Value) : ITypedValue<long>;
     public readonly record struct Location(long Value) : ITypedValue<long>;
 
-    public List<Seed> Seeds { get; } = [];
+    public IEnumerable<Seed> Seeds
+    {
+        get
+        {
+            foreach (var (start, length) in _seedRanges)
+            {
+                for (var offset = 0L; offset < length; offset++)
+                {
+                    yield return new(start + offset);
+                }
+            }
+        }
+    }
 
-    public Almanac(string input)
+    private readonly List<(long start, long length)> _seedRanges = [];
+
+    public Almanac(string input, bool parseSeedRanges = false)
     {
         using var reader = new StringReader(input);
         while (reader.ReadLine() is { } s)
         {
-            if (Seeds is []) AddSeeds(s);
+            if (!Seeds.Any()) AddSeeds(s, parseSeedRanges);
             else if (s is "") continue;
             else _ = s switch
             {
@@ -43,16 +57,27 @@ public class Almanac
         }
     }
 
-    public void AddSeeds(ReadOnlySpan<char> line)
+    public void AddSeeds(ReadOnlySpan<char> line, bool parseSeedRanges)
     {
         var prefix = "seeds:";
         if (!line.StartsWith(prefix)) throw new ArgumentException(line.ToString());
         line = line[prefix.Length..];
 
         var seeds = line.Split(' ', stackalloc long[32]);
-        foreach (var s in seeds)
+        if (parseSeedRanges)
         {
-            Seeds.Add(new(s));
+            if (seeds.Length % 2 != 0) throw new ArgumentException("odd number of seed values");
+            for (int i = 0; i < seeds.Length; i += 2)
+            {
+                _seedRanges.Add((start: seeds[i], length: seeds[i + 1]));
+            }
+        }
+        else
+        {
+            foreach (var s in seeds)
+            {
+                _seedRanges.Add((start: s, length: 1));
+            }
         }
     }
 
@@ -125,6 +150,7 @@ public class Almanac
 
         public static object Add(IEnumerable<string> lines)
         {
+            Instance._ranges.Clear();
             foreach (var line in lines)
             {
                 Instance.AddRow(line);

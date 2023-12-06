@@ -8,7 +8,7 @@ public class Day5
     public void AddSeeds()
     {
         var alm = new Almanac("");
-        alm.AddSeeds("seeds: 79 14 55 13");
+        alm.AddSeeds("seeds: 79 14 55 13", parseSeedRanges: false);
         Assert.Collection(alm.Seeds,
             n => Assert.Equal(new(79), n),
             n => Assert.Equal(new(14), n),
@@ -42,6 +42,13 @@ public class Day5
     {
         var almanac = new Almanac(ExampleInput);
         Assert.Equal(new(35), almanac.LocateMinimum());
+    }
+
+    [Fact]
+    public void LocateMinimum_SeedRanges()
+    {
+        var almanac = new Almanac(ExampleInput, parseSeedRanges: true);
+        Assert.Equal(new(46), almanac.LocateMinimum());
     }
 
     private const string ExampleInput = """
