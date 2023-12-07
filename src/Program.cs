@@ -1,10 +1,5 @@
 ﻿using advent2023;
 
-var races = new BoatRaces(Inputs.Day6, parseConcat: true);
-var margin = 1L;
-foreach (var race in races)
-{
-    margin *= race.WinningAccelerateDurations().Count();
-}
+var cards = new CamelCards(Inputs.Day7);
 
-Console.WriteLine(margin);
+Console.WriteLine(cards.Winnings());
