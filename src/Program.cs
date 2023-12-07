@@ -1,5 +1,10 @@
 ﻿using advent2023;
 
-var almanac = new Almanac(Inputs.Day5, parseSeedRanges: true);
+var races = new BoatRaces(Inputs.Day6);
+var margin = 1L;
+foreach (var race in races)
+{
+    margin *= race.WinningAccelerateDurations().Count();
+}
 
-Console.WriteLine(almanac.LocateMinimum());
+Console.WriteLine(margin);
