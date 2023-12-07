@@ -37,13 +37,23 @@ public class Day6
     public void WinningAccelerations()
     {
         var race = new BoatRace(Duration: 7, RecordDistance: 9);
-        List<int> expected = [2, 3, 4, 5];
-        var inExpectedOnce = (int t) =>
+        List<long> expected = [2, 3, 4, 5];
+        var inExpectedOnce = (long t) =>
         {
             Assert.Contains(t, expected);
             expected.Remove(t);
         };
         var expectations = expected.Select(_ => inExpectedOnce).ToArray();
         Assert.Collection(race.WinningAccelerateDurations(), expectations);
+    }
+
+    [Fact]
+    public void ParseConcat()
+    {
+        var races = new BoatRaces("""
+            Time:      7  15   30
+            Distance:  9  40  200
+            """, parseConcat: true);
+        Assert.Collection(races, r => Assert.Equal(new(71530, 940200), r));
     }
 }
