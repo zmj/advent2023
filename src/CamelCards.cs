@@ -7,13 +7,13 @@ public class CamelCards : SortedList<Hand, int>
 {
     public const int HandSize = 5;
 
-    public CamelCards(string input)
+    public CamelCards(string input, bool jokers = false)
     {
         using var reader = new StringReader(input);
         while (reader.ReadLine().AsSpan() is { IsEmpty: false } s)
         {
             var separator = s.IndexOf(' ').NotNegative();
-            var hand = new Hand(s[..separator]);
+            var hand = new Hand(s[..separator], jokers);
             var bid = int.Parse(s[(separator + 1)..]);
             Add(hand, bid);
         }
@@ -43,24 +43,24 @@ public class CamelCards : SortedList<Hand, int>
         public HandType Type { get; }
         private readonly Buffer<int> _cards;
 
-        public Hand(ReadOnlySpan<char> hand)
+        public Hand(ReadOnlySpan<char> hand, bool jokers)
         {
             if (hand.Length != HandSize) throw new ArgumentException(hand.ToString());
             for (int i = 0; i < HandSize; i++)
             {
-                SetCard(hand[i], ref _cards[i]);
+                SetCard(hand[i], jokers, ref _cards[i]);
             }
 
             Type = ChooseType();
         }
 
-        private static void SetCard(char c, ref int card)
+        private static void SetCard(char c, bool jokers, ref int card)
         {
             card = c switch
             {
                 >= '2' and <= '9' => c - '0',
                 'T' => 10,
-                'J' => 11,
+                'J' => jokers ? 1 : 11,
                 'Q' => 12,
                 'K' => 13,
                 'A' => 14,
@@ -77,7 +77,10 @@ public class CamelCards : SortedList<Hand, int>
                 counts[card]++;
             }
 
+            var jokers = counts[1];
+            counts[1] = 0;
             counts.Sort();
+            counts[^1] += jokers;
             return counts switch
             {
                 [.., 5] => HandType.FiveOfAKind,

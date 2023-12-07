@@ -19,7 +19,7 @@ public class Day7
     [InlineData("23456", HandType.HighCard)]
     public void HandTypes(string cards, HandType type)
     {
-        var hand = new Hand(cards);
+        var hand = new Hand(cards, jokers: false);
         Assert.Equal(type, hand.Type);
     }
 
@@ -34,5 +34,34 @@ public class Day7
             QQQJA 483
             """);
         Assert.Equal(6440, cards.Winnings());
+    }
+
+    [Theory]
+    [InlineData("J5555", HandType.FiveOfAKind)]
+    [InlineData("T55J5", HandType.FourOfAKind)]
+    [InlineData("2344J", HandType.ThreeOfAKind)]
+    [InlineData("2345J", HandType.OnePair)]
+    [InlineData("JJJJJ", HandType.FiveOfAKind)]
+    [InlineData("JJJ32", HandType.FourOfAKind)]
+    [InlineData("JJ332", HandType.FourOfAKind)]
+    [InlineData("JJ234", HandType.ThreeOfAKind)]
+    [InlineData("J2233", HandType.FullHouse)]
+    public void HandTypes_Jokers(string cards, HandType type)
+    {
+        var hand = new Hand(cards, jokers: true);
+        Assert.Equal(type, hand.Type);
+    }
+
+    [Fact]
+    public void Winnings_Jokers()
+    {
+        var cards = new CamelCards("""
+            32T3K 765
+            T55J5 684
+            KK677 28
+            KTJJT 220
+            QQQJA 483
+            """, jokers: true);
+        Assert.Equal(5905, cards.Winnings());
     }
 }
