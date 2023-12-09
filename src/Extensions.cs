@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Collections;
+using System.Numerics;
 
 namespace advent2023;
 
@@ -23,5 +24,28 @@ public static class Extensions
         }
 
         return destination[..count];
+    }
+
+    public static bool All<T>(this ReadOnlySpan<T> span, Func<T, bool> predicate)
+    {
+        foreach (var element in span)
+        {
+            if (!predicate(element)) return false;
+        }
+
+        return true;
+    }
+
+    public static bool All<T>(this Span<T> span, Func<T, bool> predicate) => All((ReadOnlySpan<T>)span, predicate);
+
+    public static ReadOnlySpan<bool> AsSpan(this BitArray bits, Span<bool> destination)
+    {
+        if (destination.Length < bits.Length) throw new ArgumentException("destination too small");
+        for (int i = 0; i < bits.Length; i++)
+        {
+            destination[i] = bits[i];
+        }
+
+        return destination[..bits.Length];
     }
 }

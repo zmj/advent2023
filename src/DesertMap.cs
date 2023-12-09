@@ -9,8 +9,9 @@ public class DesertMap
     private readonly BitArray _instructions;
     private readonly List<Node> _nodes = [];
     private readonly Dictionary<Label, int> _labels = [];
+    private readonly List<Node> _starts = [];
 
-    public DesertMap(string input)
+    public DesertMap(string input, bool ghost = false)
     {
         using var reader = new StringReader(input);
         while (reader.ReadLine() is { } s)
@@ -20,7 +21,7 @@ public class DesertMap
             else
             {
                 var node = new MapNode(s);
-                AddMapNode(node);
+                AddMapNode(node, ghost);
             }
         }
 
@@ -47,14 +48,18 @@ public class DesertMap
         }
     }
 
-    private readonly record struct Node(int Left, int Right);
+    private readonly record struct Node(int Left, int Right, bool Terminal);
 
-    private void AddMapNode(MapNode node)
+    private void AddMapNode(MapNode node, bool ghost)
     {
         var left = AddLabel(node.Left);
         var right = AddLabel(node.Right);
         var index = AddLabel(node.Label);
-        _nodes[index] = new(left, right);
+        var terminal = ghost ? node.Label.Three == 'Z' : node.Label.Equals(new("ZZZ"));
+        var n = new Node(left, right, terminal);
+        _nodes[index] = n;
+        var start = ghost ? node.Label.Three == 'A' : node.Label.Equals(new("AAA"));
+        if (start) _starts.Add(n);
 
         int AddLabel(Label l)
         {
@@ -69,23 +74,25 @@ public class DesertMap
         }
     }
 
-    private static Label Start { get; } = new("AAA");
-    private static Label End { get; } = new("ZZZ");
-
     public long FollowInstructions()
     {
-        var start = _labels[Start];
-        var end = _labels[End];
-        var nodes = CollectionsMarshal.AsSpan(_nodes);
+        return FollowInstructions(
+            CollectionsMarshal.AsSpan(_nodes),
+            _instructions.AsSpan(stackalloc bool[_instructions.Count]),
+            CollectionsMarshal.AsSpan(_starts));
+    }
 
-        var position = start;
+    private static long FollowInstructions(ReadOnlySpan<Node> nodes, ReadOnlySpan<bool> instructions, Span<Node> current)
+    {
         var step = 0L;
         while (true)
         {
-            if (position == end) return step;
-            var node = nodes[position];
-            var instruction = _instructions[(int)(step++ % _instructions.Length)];
-            position = instruction ? node.Right : node.Left;
+            if (current.All(static n => n.Terminal)) return step;
+            var instruction = instructions[(int)(step++ % instructions.Length)];
+            foreach (ref var node in current)
+            {
+                node = nodes[instruction ? node.Right : node.Left];
+            }
         }
     }
 
