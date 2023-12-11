@@ -21,10 +21,17 @@ public class Day9
     [InlineData("0 3 6 9 12 15", 18)]
     [InlineData("1 3 6 10 15 21", 28)]
     [InlineData("10 13 16 21 30 45", 68)]
-    public void Extrapolate(string line, int expected)
+    public void ExtrapolateFuture(string line, int expected)
     {
         var h = new History(line);
-        var actual = h.Extrapolate();
+        var actual = h.ExtrapolateFuture();
         Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void ExtrapolatePast()
+    {
+        var h = new History("10 13 16 21 30 45");
+        Assert.Equal(5, h.ExtrapolatePast());
     }
 }
