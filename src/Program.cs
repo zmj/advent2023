@@ -1,5 +1,10 @@
 ﻿using advent2023;
 
-var map = new DesertMap(Inputs.Day8, ghost: true);
+var report = new OasisReport(Inputs.Day9);
+var sum = 0L;
+foreach (var history in report.Histories)
+{
+    sum += history.Extrapolate();
+}
 
-Console.WriteLine(map.FollowInstructions());
+Console.WriteLine(sum);
